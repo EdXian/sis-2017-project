@@ -134,16 +134,16 @@ set (hdrs  src/hungarian.hpp)
 ## The recommended prefix ensures that target names across packages don't collide
 #add_executable(formation_four src/formation_four.cpp)
 add_executable(arming src/arming.cpp)
-add_executable(avoid_follow_demo src/avoid_follow_demo.cpp)
-add_executable(formation_three_interaction src/formation_three_interaction.cpp)
-add_executable(formation_four src/formation_four.cpp)
-add_executable(formation_two_interaction src/formation_two_interaction.cpp)
-add_executable(follow_test src/follow_test.cpp
-                           ${srcs}
-                           ${hdrs}   )
+#add_executable(avoid_follow_demo src/avoid_follow_demo.cpp)
+#add_executable(formation_three_interaction src/formation_three_interaction.cpp)
+#add_executable(formation_four src/formation_four.cpp)
+#add_executable(formation_two_interaction src/formation_two_interaction.cpp)
+#add_executable(follow_test src/follow_test.cpp
+#                           ${srcs}
+#                           ${hdrs}   )
 add_executable(follow_test2 src/follow_test2.cpp)
-add_executable(follow_test3 src/follow_test3.cpp)
-add_executable(offb_test src/offb.cpp)
+#add_executable(follow_test3 src/follow_test3.cpp)
+#add_executable(offb_test src/offb.cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -154,14 +154,14 @@ add_executable(offb_test src/offb.cpp)
 ## same as for the library above
 # add_dependencies(formation_four ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  add_dependencies(arming ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(avoid_follow_demo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(follow_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(avoid_follow_demo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(follow_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  add_dependencies(follow_test2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(follow_test3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(formation_four ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(follow_test3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(formation_four ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 # add_dependencies(formation_vel ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 # add_dependencies(formation_three_interaction ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(formation_two_interaction ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(formation_two_interaction ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(formation_four
 #   ${catkin_LIBRARIES}
@@ -169,33 +169,33 @@ add_executable(offb_test src/offb.cpp)
 target_link_libraries(arming
   ${catkin_LIBRARIES}
   )
-target_link_libraries(avoid_follow_demo
-  ${catkin_LIBRARIES}
-  )
-target_link_libraries(follow_test
-  ${catkin_LIBRARIES}
-  )
+#target_link_libraries(avoid_follow_demo
+#  ${catkin_LIBRARIES}
+#  )
+#target_link_libraries(follow_test
+#  ${catkin_LIBRARIES}
+#  )
 target_link_libraries(follow_test2
   ${catkin_LIBRARIES}
   )
-target_link_libraries(follow_test3
-  ${catkin_LIBRARIES}
-  )
+#target_link_libraries(follow_test3
+#  ${catkin_LIBRARIES}
+#  )
 #target_link_libraries(formation_vel
 #  ${catkin_LIBRARIES}
 #  )
-target_link_libraries(formation_three_interaction
-  ${catkin_LIBRARIES}
-  )
-target_link_libraries(formation_four
-  ${catkin_LIBRARIES}
-  )
-target_link_libraries(formation_two_interaction
-  ${catkin_LIBRARIES}
-  )
-target_link_libraries(offb_test
-  ${catkin_LIBRARIES}
-  )
+#target_link_libraries(formation_three_interaction
+#  ${catkin_LIBRARIES}
+#  )
+#target_link_libraries(formation_four
+#  ${catkin_LIBRARIES}
+#  )
+#target_link_libraries(formation_two_interaction
+#  ${catkin_LIBRARIES}
+# )
+#target_link_libraries(offb_test
+#  ${catkin_LIBRARIES}
+#  )
 #############
 ## Install ##
 #############
