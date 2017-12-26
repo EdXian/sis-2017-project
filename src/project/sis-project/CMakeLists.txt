@@ -8,9 +8,19 @@ project(sis-project)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
+    cv_bridge
+    std_msgs
+    sensor_msgs
+    image_transport
+    roscpp
+    cmake_modules
+    message_generation
+    geometry_msgs
 )
-
+find_package(OpenCV REQUIRED)
+find_package(Eigen REQUIRED)
+find_package(apriltagscpp REQUIRED)
+include(FindPkgConfig)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -115,7 +125,11 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
-  ${catkin_INCLUDE_DIRS}
+${catkin_INCLUDE_DIRS}
+${Eigen_INCLUDE_DIRS}
+${OpenCV_INCLUDE_DIRS}
+${Yaml_INCLUDE_DIRS}
+${apriltagscpp_INCLUDE_DIR}/apriltagscpp
 )
 #sis-project
 ## Declare a C++ library
@@ -145,7 +159,11 @@ include_directories(
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(sistest
-   ${catkin_LIBRARIES}
+     ${catkin_LIBRARIES}
+                                     ${Eigen_LIBRARIES}
+                                     ${OpenCV_LIBRARIES}
+                                     ${Yaml_LIBRARIES}
+                                     ${apriltagscpp_LIBRARY}
  )
 
 #############

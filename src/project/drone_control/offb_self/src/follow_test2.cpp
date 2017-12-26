@@ -1,4 +1,3 @@
-
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
@@ -17,14 +16,14 @@ float KPz = 1;
 float KProll = 1;
 
 using namespace std;
-typedef struct vir
+struct virtual_leader
 {
     float roll;
     float x;
     float y;
     float z;
 };
-
+typedef virtual_leader vir;
 mavros_msgs::State current_state;
 void state_cb(const mavros_msgs::State::ConstPtr& msg) {
     current_state = *msg;

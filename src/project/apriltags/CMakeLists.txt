@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   message_generation
   geometry_msgs
+  mavros_msgs
 )
 find_package(OpenCV REQUIRED)
 find_package(Eigen REQUIRED)
@@ -60,13 +61,19 @@ message(STATUS ${OpenCV_INCLUDE_DIRS})
 message(STATUS ${OpenCV_LIBRARIES})
 message(STATUS ${OpenCV_LDFLAGS})
 add_executable(apriltags src/apriltags.cpp)
+add_executable(drone src/drone.cpp)
 target_link_libraries(apriltags ${catkin_LIBRARIES}
                                 ${Eigen_LIBRARIES}
                                 ${OpenCV_LIBRARIES}
                                 ${Yaml_LIBRARIES}    
                                 ${apriltagscpp_LIBRARY})
+target_link_libraries(drone ${catkin_LIBRARIES}
+                                ${Eigen_LIBRARIES}
+                                ${OpenCV_LIBRARIES}
+                                ${Yaml_LIBRARIES}
+                                ${apriltagscpp_LIBRARY})
 add_dependencies(apriltags ${PROJECT_NAME}_gencpp)
-
+add_dependencies(drone ${PROJECT_NAME}_gencpp)
 install(TARGETS apriltags
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION} 
 )
