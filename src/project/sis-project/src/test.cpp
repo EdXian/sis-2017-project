@@ -6,4 +6,5 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
 
   ROS_INFO("Hello world!");
+
 }
