@@ -4,4 +4,4 @@
 /logs
 
 #*.catkin_workspace
-*.user
+*.workspace.user
