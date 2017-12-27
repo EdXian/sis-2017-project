@@ -6,7 +6,7 @@ cd apriltag-lib/apriltags-cpp
 
 mkdir build && cd build
 
-cmkae ..
+cmake ..
 
 sudo make install 
 
