@@ -35,7 +35,7 @@ if (${CAIRO_FOUND})
 add_definitions(-DMZ_HAVE_CAIRO)
 endif ()
 
-find_package( CGAL QUIET COMPONENTS  )
+find_package( CGAL QUIET COMPONENTS  core)
 if (CGAL_FOUND)
   include( ${CGAL_USE_FILE} )
   add_definitions(-DHAVE_CGAL)

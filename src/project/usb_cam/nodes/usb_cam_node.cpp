@@ -98,7 +98,7 @@ public:
     node_.param("io_method", io_method_name_, std::string("mmap"));
     node_.param("image_width", image_width_, 640);
     node_.param("image_height", image_height_, 480);
-    node_.param("framerate", framerate_, 30);
+    node_.param("framerate", framerate_, 60);
     // possible values: yuyv, uyvy, mjpeg, yuvmono10, rgb24
     node_.param("pixel_format", pixel_format_name_, std::string("mjpeg"));
     // enable/disable autofocus

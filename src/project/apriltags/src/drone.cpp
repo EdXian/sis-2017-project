@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include "apriltags/AprilTagDetections.h"
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Pose.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/SetMode.h>
@@ -74,8 +75,12 @@ int main(int argc, char **argv)
 
   ros::Publisher local_vel_pub = nh.advertise<geometry_msgs::TwistStamped>("/mavros/setpoint_velocity/cmd_vel", 10);
 
+  ros::Publisher  pose_pub =  nh.advertise<geometry_msgs::PoseStamped>("mavros/posedata", 10);
+
   while(ros::ok()){
+	
     ros::spinOnce();
+	
     loop_rate.sleep();
   }
 
