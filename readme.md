@@ -6,7 +6,7 @@ cd apriltag-lib/apriltags-cpp
 
 mkdir build && cd build
 
-cmkae ..
+cmake ..
 
 sudo make install 
 
@@ -42,6 +42,12 @@ connect to vrpn server ip (e.g 192.168.1.99).
 roslaunch vrpn_client_ros sample.launch server:=192.168.1.99 
 
 ```
-
+### Launch project
+```
+roslaunch usb_cam usb_cam-test.launch
+roslaunch apriltags usb_cam_apriltags.launch 
+rostopic echo /apriltags/detections
+rosrun image_view image_view image:=/usb_cam/image_raw
+```
 
 
