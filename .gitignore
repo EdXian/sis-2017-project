@@ -3,5 +3,5 @@
 /install
 /logs
 
-*.catkin_workspace
-*.workspace
+#*.catkin_workspace
+#*.workspace
