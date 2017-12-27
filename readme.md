@@ -2,6 +2,9 @@
 
 install Apriltag Library (project directory)
 ```
+install cgal
+sudo apt-get install libcgal-dev
+
 cd apriltag-lib/apriltags-cpp
 
 mkdir build && cd build
