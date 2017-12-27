@@ -15,9 +15,10 @@ sudo make install
 
 To make sis-project
 ```
+catkin_make
+
 source ev.sh
 
-catkin_make
 
 ```
 ### USB-CAMERA
