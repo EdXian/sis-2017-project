@@ -270,13 +270,10 @@ int main(int argc, char **argv)
     ROS_INFO("setpoint: %.2f, %.2f, %.2f, %.2f", target.x, target.y, target.z, target.roll/pi*180);
     if(apriltag_detect){
 
-
-
     }else {
 
-
     }
-    //local_vel_pub.publish(vs);
+
     mocap_pos_pub.publish(host_mocap);
 
     ros::spinOnce();
