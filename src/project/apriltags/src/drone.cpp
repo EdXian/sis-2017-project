@@ -174,8 +174,6 @@ int main(int argc, char **argv)
   geometry_msgs::PoseStamped pose;
 
   vir target;
-
-
   target.x = 0;
   target.y = -0.5;
   target.z = 0.5;
@@ -183,6 +181,7 @@ int main(int argc, char **argv)
 
   //send few setpoints before starting
  for(int i = 100; ros::ok() && i > 0; --i){
+   // local_pos_pub.publish();
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
@@ -217,7 +216,7 @@ int main(int argc, char **argv)
               last_request = ros::Time::now();
           }
       }
-
+     //keyboard control
       int c = getch();
       if (c != EOF) {
           switch (c) {
@@ -266,18 +265,21 @@ int main(int argc, char **argv)
                   break;
               }
       }
-  if(target.roll>pi)
-  target.roll = target.roll - 2*pi;
-  else if(target.roll<-pi)
-  target.roll = target.roll + 2*pi;
 
-  ROS_INFO("setpoint: %.2f, %.2f, %.2f, %.2f", target.x, target.y, target.z, target.roll/pi*180);
 
-  mocap_pos_pub.publish(host_mocap);
+    ROS_INFO("setpoint: %.2f, %.2f, %.2f, %.2f", target.x, target.y, target.z, target.roll/pi*180);
+    if(apriltag_detect){
 
-//local_vel_pub.publish(vs);
 
-  ros::spinOnce();
-  rate.sleep();
+
+    }else {
+
+
+    }
+    //local_vel_pub.publish(vs);
+    mocap_pos_pub.publish(host_mocap);
+
+    ros::spinOnce();
+    rate.sleep();
   }
 }
