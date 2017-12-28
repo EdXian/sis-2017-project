@@ -45,7 +45,7 @@ void apriltags_cb(const apriltags::AprilTagDetections::ConstPtr& msg){
     apriltag_pose = tags.detections[0].pose;
     apriltag_detect = true;
   }else{
-    std::cout<<  "empty" <<std::endl;
+  //  std::cout<<  "empty" <<std::endl;
     apriltag_detect = false;
   }
 }
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 
 
   geometry_msgs::PoseStamped pose;
-
+  geometry_msgs::TwistStamped vs;
   vir target;
   target.x = 0;
   target.y = -0.5;
@@ -269,16 +269,27 @@ int main(int argc, char **argv)
 
     ROS_INFO("setpoint: %.2f, %.2f, %.2f, %.2f", target.x, target.y, target.z, target.roll/pi*180);
     if(apriltag_detect){
+        target.x = host_mocap.pose.position.x + apriltag_pose.position.x;
+        target.y = host_mocap.pose.position.y - apriltag_pose.position.y;
+        target.z = host_mocap.pose.position.z - (0.5-apriltag_pose.position.z);
 
 
 
     }else {
+      if(host_mocap.pose.position.z < (target.z-0.1)){
+        target = target;
+      }
+
+        target.x = host_mocap.pose.position.x;
+        target.y = host_mocap.pose.position.y;
+        target.z = host_mocap.pose.position.z;
 
 
     }
-    //local_vel_pub.publish(vs);
-    mocap_pos_pub.publish(host_mocap);
 
+    mocap_pos_pub.publish(host_mocap);
+    follow(target,host_mocap,&vs,0,0);
+    local_vel_pub.publish(vs);
     ros::spinOnce();
     rate.sleep();
   }
