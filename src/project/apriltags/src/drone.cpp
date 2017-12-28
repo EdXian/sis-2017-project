@@ -34,6 +34,7 @@ typedef virtual_leader vir;
 
 geometry_msgs::PoseStamped drone_target;
 bool apriltag_detect =false;
+bool landing = false;
 apriltags::AprilTagDetections tags;
 geometry_msgs::Pose apriltag_pose;
 void apriltags_cb(const apriltags::AprilTagDetections::ConstPtr& msg){
@@ -254,6 +255,7 @@ int main(int argc, char **argv)
                     target.y = -0.5;
                     target.z = 0;
                     target.roll = 0;
+                    landing = true;
                     break;
                   }
               case 108:    // close arming
@@ -272,18 +274,22 @@ int main(int argc, char **argv)
 
 
     ROS_INFO("setpoint: %.2f, %.2f, %.2f, %.2f", target.x, target.y, target.z, target.roll/pi*180);
-    if(apriltag_detect){
 
-//        drone_target = tags.detections[0].pose;
+    if(landing == true){
+       drone_target.pose.position.x = 0;
+       drone_target.pose.position.y = 0;
+       drone_target.pose.position.z = 0;
+    }else if((apriltag_detect==true) && (landing == false)){
+
+      //drone_target = tags.detections[0].pose;
       apriltag_pose.position.x = host_mocap.pose.position.x+tags.detections[0].pose.position.x;
       apriltag_pose.position.y = host_mocap.pose.position.y-tags.detections[0].pose.position.y;
       apriltag_pose.position.z = host_mocap.pose.position.z-tags.detections[0].pose.position.z;
 
       drone_target.pose.position.x = apriltag_pose.position.z + 0.5;
-
-
+      //update current pose
       host_mocap_last = host_mocap;
-    }else {
+    }else if((apriltag_detect==false)&&(landing == false)){
       //no apriltags are detedcted
 
       drone_target = host_mocap_last;
