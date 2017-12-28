@@ -206,6 +206,7 @@ int main(int argc, char **argv)
           if( set_mode_client.call(offb_set_mode) &&
                   offb_set_mode.response.mode_sent) {
               ROS_INFO("Offboard enabled");
+              //
           }
           last_request = ros::Time::now();
       } else {
