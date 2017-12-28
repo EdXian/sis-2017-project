@@ -32,6 +32,7 @@ struct virtual_leader
 };
 typedef virtual_leader vir;
 
+geometry_msgs::PoseStamped drone_target;
 bool apriltag_detect =false;
 apriltags::AprilTagDetections tags;
 geometry_msgs::Pose apriltag_pose;
@@ -54,7 +55,8 @@ mavros_msgs::State current_state;
 void state_cb(const mavros_msgs::State::ConstPtr& msg) {
     current_state = *msg;
 }
-geometry_msgs::PoseStamped host_mocap;
+geometry_msgs::PoseStamped host_mocap , host_mocap_last;
+
 void host_pos(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
 
@@ -170,23 +172,24 @@ int main(int argc, char **argv)
     rate.sleep();
   }
 
-
-  geometry_msgs::PoseStamped pose;
-
   vir target;
   target.x = 0;
   target.y = -0.5;
   target.z = 0.5;
   target.roll = 0;
+  host_mocap_last.header.stamp = ros::Time::now();
+  host_mocap_last.pose.position.x = target.x;
+  host_mocap_last.pose.position.y = target.y;
+  host_mocap_last.pose.position.z = target.z;
 
   //send few setpoints before starting
  for(int i = 100; ros::ok() && i > 0; --i){
-   // local_pos_pub.publish();
+    local_pos_pub.publish(drone_target);
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
   }
-  ros::Publisher  pose_pub =  nh.advertise<geometry_msgs::PoseStamped>("mavros/posedata", 10);
+
   mavros_msgs::SetMode offb_set_mode;
   offb_set_mode.request.custom_mode = "OFFBOARD";
   mavros_msgs::CommandBool arm_cmd;
@@ -270,12 +273,23 @@ int main(int argc, char **argv)
     ROS_INFO("setpoint: %.2f, %.2f, %.2f, %.2f", target.x, target.y, target.z, target.roll/pi*180);
     if(apriltag_detect){
 
-    }else {
+//        drone_target = tags.detections[0].pose;
+      apriltag_pose.position.x = host_mocap.pose.position.x+tags.detections[0].pose.position.x;
+      apriltag_pose.position.y = host_mocap.pose.position.y-tags.detections[0].pose.position.y;
+      apriltag_pose.position.z = host_mocap.pose.position.z-tags.detections[0].pose.position.z;
 
+      drone_target.pose.position.x = apriltag_pose.position.z + 0.5;
+
+
+      host_mocap_last = host_mocap;
+    }else {
+      //no apriltags are detedcted
+
+      drone_target = host_mocap_last;
     }
 
+    local_pos_pub.publish(drone_target);
     mocap_pos_pub.publish(host_mocap);
-
     ros::spinOnce();
     rate.sleep();
   }
