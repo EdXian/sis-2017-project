@@ -1,7 +1,11 @@
 #include <ros/ros.h>
 #include "apriltags/AprilTagDetections.h"
 #include <geometry_msgs/PoseStamped.h>
+
 #include "geometry_msgs/Pose.h"
+
+#include <geometry_msgs/Pose.h>
+
 #include <geometry_msgs/TwistStamped.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/SetMode.h>
@@ -156,6 +160,7 @@ int main(int argc, char **argv)
   ros::Subscriber host_sub = nh.subscribe<geometry_msgs::PoseStamped>("/vrpn_client_node/RigidBody1/pose", 10, host_pos);
   ros::Publisher local_vel_pub = nh.advertise<geometry_msgs::TwistStamped>("/mavros/setpoint_velocity/cmd_vel", 10);
 
+
   ros::Rate rate(100);
 
   // Wait for FCU connection.
@@ -182,7 +187,7 @@ int main(int argc, char **argv)
     ros::spinOnce();
     rate.sleep();
   }
-  //
+  ros::Publisher  pose_pub =  nh.advertise<geometry_msgs::PoseStamped>("mavros/posedata", 10);
   mavros_msgs::SetMode offb_set_mode;
   offb_set_mode.request.custom_mode = "OFFBOARD";
   mavros_msgs::CommandBool arm_cmd;
@@ -261,10 +266,6 @@ int main(int argc, char **argv)
                   break;
               }
       }
-
-
-
-
   if(target.roll>pi)
   target.roll = target.roll - 2*pi;
   else if(target.roll<-pi)
