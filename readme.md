@@ -2,8 +2,8 @@
 
 install Apriltag Library (project directory)
 ```
-install cgal
-sudo apt-get install libcgal-dev
+install cgal library ...
+sudo apt-get install libcgal-dev libcgal-qt5-dev
 
 cd apriltag-lib/apriltags-cpp
 
@@ -12,7 +12,6 @@ mkdir build && cd build
 cmake ..
 
 sudo make install 
-
 ```
 
 
@@ -21,8 +20,6 @@ To make sis-project
 catkin_make
 
 source ev.sh
-
-
 ```
 ### USB-CAMERA
 
