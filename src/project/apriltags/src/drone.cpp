@@ -45,7 +45,7 @@ void apriltags_cb(const apriltags::AprilTagDetections::ConstPtr& msg){
     apriltag_pose = tags.detections[0].pose;
     apriltag_detect = true;
   }else{
-//    std::cout<<  "empty" <<std::endl;
+    std::cout<<  "empty" <<std::endl;
     apriltag_detect = false;
   }
 }
