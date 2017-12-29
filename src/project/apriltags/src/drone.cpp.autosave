@@ -47,7 +47,7 @@ void apriltags_cb(const apriltags::AprilTagDetections::ConstPtr& msg){
     apriltag_pose = tags.detections[0].pose;
     apriltag_detect = true;
   }else{
-    std::cout<<  "empty" <<std::endl;
+//    std::cout<<  "empty" <<std::endl;
     apriltag_detect = false;
   }
 }
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
   ros::Subscriber host_sub = nh.subscribe<geometry_msgs::PoseStamped>("/vrpn_client_node/RigidBody1/pose", 10, host_pos);
   ros::Publisher local_vel_pub = nh.advertise<geometry_msgs::TwistStamped>("/mavros/setpoint_velocity/cmd_vel", 10);
 
-  ros::Publisher pst_pub = nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/target_local", 10);
+  ros::Publisher pst_pub = nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local", 10);
 
   ros::Rate rate(100);
 
@@ -176,26 +176,32 @@ int main(int argc, char **argv)
 
   vir target;
   target.x = 0;
-  target.y = -0.5;
-  target.z = 0.5;
+  target.y = 0.3;
+  target.z = 0.7;
   target.roll = 0;
   host_mocap_last.header.stamp = ros::Time::now();
   host_mocap_last.pose.position.x = target.x;
   host_mocap_last.pose.position.y = target.y;
   host_mocap_last.pose.position.z = target.z;
+
   pst.position.x = target.x;
   pst.position.y = target.y;
   pst.position.z = target.z;
   pst.yaw = 0;
+  pst.velocity.x=0;
+  pst.velocity.y=0;
+  pst.velocity.z=0;
   pst.header.frame_id="fcu";
-  pst.coordinate_frame = mavros_msgs::PositionTarget::FRAME_LOCAL_NED;
-                                     //設定成NED座標
+  pst.coordinate_frame = mavros_msgs::PositionTarget::FRAME_LOCAL_NED;                                 
   pst.type_mask =  mavros_msgs::PositionTarget::IGNORE_AFX |
                     mavros_msgs::PositionTarget::IGNORE_AFY |
                     mavros_msgs::PositionTarget::IGNORE_AFZ ;
+
+
   //send few setpoints before starting
  for(int i = 100; ros::ok() && i > 0; --i){
-    local_pos_pub.publish(drone_target);
+    pst.header.stamp = ros::Time::now();
+    pst_pub.publish(pst);
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
@@ -290,28 +296,51 @@ int main(int argc, char **argv)
        drone_target.pose.position.y = 0;
        drone_target.pose.position.z = 0;
 
+       pst.type_mask =  mavros_msgs::PositionTarget::IGNORE_AFX |
+                        mavros_msgs::PositionTarget::IGNORE_AFY |
+                        mavros_msgs::PositionTarget::IGNORE_AFZ
+                        ;
 
        pst.position.x = 0;
        pst.position.y = 0;
        pst.position.z = 0;
     }else if((apriltag_detect==true) && (landing == false)){
+
+//      pst.type_mask =  mavros_msgs::PositionTarget::IGNORE_AFX |
+//                       mavros_msgs::PositionTarget::IGNORE_AFY |
+//                       mavros_msgs::PositionTarget::IGNORE_AFZ |
+//                       mavros_msgs::PositionTarget::IGNORE_PX |
+//                       mavros_msgs::PositionTarget::IGNORE_PY |
+//                       mavros_msgs::PositionTarget::IGNORE_PZ ;
+
+
       //usr velocity control
       //drone_target = tags.detections[0].pose;
 //      apriltag_pose.position.x = host_mocap.pose.position.x+tags.detections[0].pose.position.x;
 //      apriltag_pose.position.y = host_mocap.pose.position.y-tags.detections[0].pose.position.y;
 //      apriltag_pose.position.z = host_mocap.pose.position.z-tags.detections[0].pose.position.z;
-
+      /*
+         
+      */
 //      drone_target.pose.position.x = apriltag_pose.position.z + 0.5;
       //update current pose
       host_mocap_last = host_mocap;
+
     }else if((apriltag_detect==false)&&(landing == false)){
       //no apriltags are detedcted
 
+      pst.type_mask =  mavros_msgs::PositionTarget::IGNORE_AFX |
+                      mavros_msgs::PositionTarget::IGNORE_AFY |
+                      mavros_msgs::PositionTarget::IGNORE_AFZ ;
+
+
       drone_target = host_mocap_last;
       pst.position = host_mocap_last.pose.position;
+
     }
-      pst_pub.publish(pst);
-//    local_pos_pub.publish(drone_target);
+    pst.header.stamp = ros::Time::now();
+ //   pst_pub.publish(pst);
+    local_pos_pub.publish(drone_target);
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
