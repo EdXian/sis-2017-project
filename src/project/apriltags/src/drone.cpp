@@ -37,6 +37,7 @@ bool apriltag_detect =false;
 bool landing = false;
 apriltags::AprilTagDetections tags;
 geometry_msgs::Pose apriltag_pose;
+
 void apriltags_cb(const apriltags::AprilTagDetections::ConstPtr& msg){
 
   tags = *msg;
@@ -148,7 +149,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "drone");
   ros::NodeHandle nh;
   std::cout << "start " <<std::endl;
-  ros::Subscriber sub = nh.subscribe("/apriltags/detections", 10, apriltags_cb);
+  ros::Subscriber sub = nh.subscribe<apriltags::AprilTagDetections>("/apriltags/detections", 10, apriltags_cb);
 
   ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>
                               ("/mavros/state", 10, state_cb);
@@ -177,7 +178,7 @@ int main(int argc, char **argv)
   vir target;
   target.x = 0;
   target.y = 0.3;
-  target.z = 0.7;
+  target.z = 0.8;
   target.roll = 0;
   host_mocap_last.header.stamp = ros::Time::now();
   host_mocap_last.pose.position.x = target.x;
@@ -290,9 +291,9 @@ int main(int argc, char **argv)
 
 
     //ROS_INFO("setpoint:  x = %.2f, y = %.2f, z = %.2f", apriltag_pose.position.x, apriltag_pose.position.y, apriltag_pose.position.z);
-
+    std::cout<<" --- --- --- --- --- -- --"<<std::endl;
+    std::cout<<std::endl;
     ROS_INFO("setpoint:  roll : %.5f\n", qua2eul(host_mocap));
-
 
     if(landing == true){
 //       drone_target.pose.position.x = 0;
@@ -320,15 +321,18 @@ int main(int argc, char **argv)
                        mavros_msgs::PositionTarget::IGNORE_PZ ;
 
       geometry_msgs::Pose  ap_global ;
-      double theta = qua2eul( host_mocap );
+      double theta = -1*qua2eul( host_mocap );
       ap_global.position.x = tags.detections[0].pose.position.x *cos(theta) - tags.detections[0].pose.position.y * sin(theta);
       ap_global.position.y = tags.detections[0].pose.position.x *sin(theta) + tags.detections[0].pose.position.y * cos(theta);
 
-      pst.velocity.x = -1*0.5*(ap_global.position.x);
-      pst.velocity.y = -1 * 0.5 * (ap_global.position.x);
-      pst.velocity.z = -1*0.5*(host_mocap.pose.position.z - 0.5); //desired height
+      pst.velocity.x = 0.5*(ap_global.position.x);
+      pst.velocity.y = -1 * 0.5 * (ap_global.position.y);
+      pst.velocity.z = -1*0.5*(host_mocap.pose.position.z - 0.7); //desired height
 
-
+      ROS_INFO("velocity vx: %.5f    vy: %.5f    \n",  pst.velocity.x , pst.velocity.y);
+      std::cout<<std::endl;
+      ROS_INFO("theta = %.5f    \n",  theta * 57.3);
+      std::cout<<std::endl;
       host_mocap_last = host_mocap;
 
     }else if((apriltag_detect==false)&&(landing == false)){
