@@ -34,6 +34,7 @@ struct virtual_leader
 };
 typedef virtual_leader vir;
 mavros_msgs::PositionTarget pst;
+geometry_msgs::TwistStamped vel;
 geometry_msgs::PoseStamped drone_target;
 bool apriltag_detect =false;
 bool landing = false;
@@ -180,7 +181,7 @@ int main(int argc, char **argv)
   vir target;
   target.x = 0;
   target.y = 0.3;
-  target.z = 0.8;
+  target.z = 1.0;
   target.roll = 0;
   host_mocap_last.header.stamp = ros::Time::now();
   host_mocap_last.pose.position.x = target.x;
@@ -200,11 +201,16 @@ int main(int argc, char **argv)
                     mavros_msgs::PositionTarget::IGNORE_AFY |
                     mavros_msgs::PositionTarget::IGNORE_AFZ ;
 
-
+  vel.twist.linear.x = -1* (host_mocap.pose.position.x - target.x  );
+  vel.twist.linear.y = -1* (host_mocap.pose.position.y - target.y   );
+  vel.twist.linear.z = -1* (host_mocap.pose.position.z - target.z   );
   //send few setpoints before starting
  for(int i = 100; ros::ok() && i > 0; --i){
-    pst.header.stamp = ros::Time::now();
-    pst_pub.publish(pst);
+   local_vel_pub.publish(vel);
+//    pst.header.stamp = ros::Time::now();
+   //    pst_pub.publish(pst);
+   vel.header.stamp=ros::Time::now();
+
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
@@ -305,13 +311,20 @@ int main(int argc, char **argv)
        pst.type_mask= 0;
        pst.type_mask =  mavros_msgs::PositionTarget::IGNORE_AFX |
                         mavros_msgs::PositionTarget::IGNORE_AFY |
-                        mavros_msgs::PositionTarget::IGNORE_AFZ
-                        ;
+                        mavros_msgs::PositionTarget::IGNORE_AFZ |
+                        mavros_msgs::PositionTarget::IGNORE_VX |
+                        mavros_msgs::PositionTarget::IGNORE_VY |
+                        mavros_msgs::PositionTarget::IGNORE_VZ ;
 
        pst.position.x = 0;
        pst.position.y = 0.15;
        pst.position.z = 0.4;
        pst.yaw = -1*(pi/2);
+
+       vel.twist.linear.x = -1* (host_mocap.pose.position.x - 0   );
+       vel.twist.linear.y = -1* (host_mocap.pose.position.y - 0.15   );
+       vel.twist.linear.z = -1* (host_mocap.pose.position.z - 0.4   );
+
     }else if((apriltag_detect==true) && (landing == false)){
 
       pst.type_mask= 0;
@@ -327,9 +340,15 @@ int main(int argc, char **argv)
       ap_global.position.x = tags.detections[0].pose.position.x *cos(theta) - tags.detections[0].pose.position.y * sin(theta);
       ap_global.position.y = tags.detections[0].pose.position.x *sin(theta) + tags.detections[0].pose.position.y * cos(theta);
 
-      pst.velocity.x = 1.5*ap_gain*(ap_global.position.x);
-      pst.velocity.y = -1.5*ap_gain * (ap_global.position.y);
-      pst.velocity.z = -1*(host_mocap.pose.position.z - 0.7); //desired height
+      pst.velocity.x = 1*ap_gain*(ap_global.position.x);
+      pst.velocity.y = -1*ap_gain * (ap_global.position.y);
+      pst.velocity.z = -1.5*(host_mocap.pose.position.z - 1.0); //desired height
+
+      vel.twist.linear.x = 1*ap_gain*(ap_global.position.x);
+      vel.twist.linear.y = -1*ap_gain * (ap_global.position.y);
+      vel.twist.linear.z = -1.5*(host_mocap.pose.position.z - 1.0);
+
+
 
       ROS_INFO("velocity vx: %.5f    vy: %.5f    \n",  pst.velocity.x , pst.velocity.y);
       ROS_INFO("theta = %.5f    \n",  theta * (180/pi));
@@ -340,15 +359,25 @@ int main(int argc, char **argv)
       //no apriltags are detedcted
       pst.type_mask= 0;
       pst.type_mask =  mavros_msgs::PositionTarget::IGNORE_AFX |
-                      mavros_msgs::PositionTarget::IGNORE_AFY |
-                      mavros_msgs::PositionTarget::IGNORE_AFZ ;
+                       mavros_msgs::PositionTarget::IGNORE_AFY |
+                       mavros_msgs::PositionTarget::IGNORE_AFZ |
+                       mavros_msgs::PositionTarget::IGNORE_VX |
+                       mavros_msgs::PositionTarget::IGNORE_VY |
+                       mavros_msgs::PositionTarget::IGNORE_VZ
+                         ;
+      vel.twist.linear.x = -1* (host_mocap.pose.position.x - host_mocap_last.pose.position.x   );
+      vel.twist.linear.y = -1* (host_mocap.pose.position.y - host_mocap_last.pose.position.y   );
+      vel.twist.linear.z = -1* (host_mocap.pose.position.z - host_mocap_last.pose.position.z   );
       drone_target = host_mocap_last;
       pst.position = host_mocap_last.pose.position;
     }
-
+    pst.header.frame_id="fcu";
+    pst.coordinate_frame = mavros_msgs::PositionTarget::FRAME_LOCAL_NED;
     pst.header.stamp = ros::Time::now();
-    pst_pub.publish(pst);
+  //  pst_pub.publish(pst);
   //  local_pos_pub.publish(drone_target);
+    vel.header.stamp = ros::Time::now();
+    local_vel_pub.publish(vel);
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
