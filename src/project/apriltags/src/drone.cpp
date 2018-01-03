@@ -15,6 +15,8 @@
 #include <termios.h>
 #include <fcntl.h>
 
+#define ap_gain 1
+
 #define pi 3.1415926
 int flag=0;
 float KPx = 1;
@@ -325,13 +327,12 @@ int main(int argc, char **argv)
       ap_global.position.x = tags.detections[0].pose.position.x *cos(theta) - tags.detections[0].pose.position.y * sin(theta);
       ap_global.position.y = tags.detections[0].pose.position.x *sin(theta) + tags.detections[0].pose.position.y * cos(theta);
 
-      pst.velocity.x = 0.5*(ap_global.position.x);
-      pst.velocity.y = -1 * 0.5 * (ap_global.position.y);
-      pst.velocity.z = -1*0.5*(host_mocap.pose.position.z - 0.7); //desired height
+      pst.velocity.x = 1.5*ap_gain*(ap_global.position.x);
+      pst.velocity.y = -1.5*ap_gain * (ap_global.position.y);
+      pst.velocity.z = -1*(host_mocap.pose.position.z - 0.7); //desired height
 
       ROS_INFO("velocity vx: %.5f    vy: %.5f    \n",  pst.velocity.x , pst.velocity.y);
-      std::cout<<std::endl;
-      ROS_INFO("theta = %.5f    \n",  theta * 57.3);
+      ROS_INFO("theta = %.5f    \n",  theta * (180/pi));
       std::cout<<std::endl;
       host_mocap_last = host_mocap;
 
