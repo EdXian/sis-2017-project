@@ -51,4 +51,10 @@ rostopic echo /apriltags/detections
 rosrun image_view image_view image:=/usb_cam/image_raw
 ```
 
+## Hardware 
+ 1 Onboard Computer: UP Board
+ 2 Autopilot: PX4
+ 3 Web-cam : Logitech C310	
+ 3 Drone: DJI F450
+
 
