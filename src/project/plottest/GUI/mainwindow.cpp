@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     */
    //ui->customplot->addGraph();
 
-    ui->customplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+   // ui->customplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     for(int i=0;i<10;i++)
     {
       ui->customplot->addGraph();
@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()),this, SLOT(sub_loop()));
+    connect(timer, SIGNAL(timeout()),this, SLOT(plot_loop()));
     //looprate
     timer->start(10);
 
@@ -90,10 +90,10 @@ void MainWindow::plot_loop()
      {
        for(int i=0;i<rigidbody_group.size();i++)
        {
-//           x[i].push_back(rigidbody_group[i]->data.x);
-//           y[i].push_back(rigidbody_group[i]->data.y);
-         x[i].pop_front();
-         y[i].pop_front();
+           x[i].push_back(rigidbody_group[i]->data.x);
+           y[i].push_back(rigidbody_group[i]->data.y);
+//         x[i].pop_front();
+//         y[i].pop_front();
        }
      }
 

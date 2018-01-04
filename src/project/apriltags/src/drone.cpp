@@ -15,7 +15,7 @@
 #include <termios.h>
 #include <fcntl.h>
 
-#define ap_gain 1
+#define ap_gain 0.5
 
 #define pi 3.1415926
 int flag=0;
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
 
   vir target;
   target.x = 0;
-  target.y = 0.3;
+  target.y = 0.0;
   target.z = 1.0;
   target.roll = 0;
   host_mocap_last.header.stamp = ros::Time::now();
