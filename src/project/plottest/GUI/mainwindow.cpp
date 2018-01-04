@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
      ui->setupUi(this);
      this->setWindowTitle("plottest");
 
-    drone_curve =  new QCPCurve(ui->customplot->xAxis, ui->customplot->yAxis);
+    //drone_curve =  new QCPCurve(ui->customplot->xAxis, ui->customplot->yAxis);
     getRosTopics(topic_list);
     for(ros::master::V_TopicInfo::iterator it=topic_list.begin();it!=topic_list.end();it++)
     {
@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
       rigidbody_group.push_back(new rigidbody(rigidbody_list[i]));
       curve_list.push_back(new QCPCurve(ui->customplot->xAxis, ui->customplot->yAxis));
       QCPCurveData *path_data;
-     // path_data_list.push_back(*path_data);
+      path_curve_list.push_back(new QCPCurve(ui->customplot->xAxis, ui->customplot->yAxis));
     }
 
     ui->customplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     timer->start(10);
     //looprate
 
-    drone_curve->setPen(QPen(Qt::red));
+    //drone_curve->setPen(QPen(Qt::red));
 
 
 
@@ -75,11 +75,19 @@ void MainWindow::plot_loop()
      //plot rigid body curve
     for(unsigned int j = 0; j< rigidbody_group.size();j++){
 
+
       for (unsigned int i=0; i<100; ++i)
       {
         curve_data[i] = QCPCurveData(i,  rigidbody_group[j]->data.x+0.15*cos(0.1*i), rigidbody_group[j]->data.y+0.15*sin(0.1*i));
       }
-        curve_list[j]->setPen(QPen(Qt::red));
+      QPen mypen;
+      mypen.setWidth(2);
+      if(j==1){
+        mypen.setColor(Qt::blue);
+      }else{
+        mypen.setColor(Qt::red);
+      }
+        curve_list[j]->setPen(mypen);
         curve_list[j]->data()->set(curve_data,true);
     }
 
@@ -89,9 +97,17 @@ void MainWindow::plot_loop()
       for(unsigned int i=0;i<rigidbody_group[j]->record_data.size();i++){
 
         path_data[i] = QCPCurveData(i,rigidbody_group[j]->record_data[i].x,rigidbody_group[j]->record_data[i].y );
+
+      }
+      QPen mypen;
+      mypen.setWidth(2);
+      if(j==1){
+        mypen.setColor(Qt::blue);
+      }else{
+        mypen.setColor(Qt::red);
       }
 
-      path_curve_list[j]->setPen(QPen(Qt::red));
+      path_curve_list[j]->setPen(mypen);
       path_curve_list[j]->data()->set(path_data,true);
 
     }

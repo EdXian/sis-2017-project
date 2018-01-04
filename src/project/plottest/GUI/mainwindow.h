@@ -27,9 +27,9 @@ private slots:
     void plot_loop();
 
 private:
-
+    QCPCurveData plot;
     QVector<QCPCurveData> curve_data;
-    QCPCurve *drone_curve;
+//    QCPCurve *drone_curve;
     std::vector<QCPCurve*> curve_list;
     std::vector<QCPCurve*> path_curve_list;
     QVector<QCPCurveData> path_data;
