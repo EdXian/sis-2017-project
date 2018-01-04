@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
       ,x(10),y(10),curve_data(100)
 {
      ui->setupUi(this);
-     this->setWindowTitle("plottest");
+     this->setWindowTitle("sis-2017-project");
 
     //drone_curve =  new QCPCurve(ui->customplot->xAxis, ui->customplot->yAxis);
     getRosTopics(topic_list);

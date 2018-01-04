@@ -15,7 +15,7 @@
 #include <termios.h>
 #include <fcntl.h>
 
-#define ap_gain 0.5
+#define ap_gain 0.4
 
 #define pi 3.1415926
 int flag=0;
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
   vir target,turtlebot_v;
   target.x = 0;
   target.y = 0.0;
-  target.z = 1.0;
+  target.z = 0.8;
   target.roll = 0;
   host_mocap_last.header.stamp = ros::Time::now();
   host_mocap_last.pose.position.x = target.x;
@@ -330,8 +330,8 @@ int main(int argc, char **argv)
                         mavros_msgs::PositionTarget::IGNORE_VZ ;
 
        pst.position.x = 0;
-       pst.position.y = 0.15;
-       pst.position.z = 0.4;
+       pst.position.y = 0.0;
+       pst.position.z = 0.35;
        pst.yaw = -1*(pi/2);
 
        vel.twist.linear.x = -1* (host_mocap.pose.position.x - 0   );
@@ -357,9 +357,9 @@ int main(int argc, char **argv)
       pst.velocity.y = -1*ap_gain * (ap_global.position.y);
       pst.velocity.z = -1.5*(host_mocap.pose.position.z - 1.0); //desired height
 
-      vel.twist.linear.x = 1*ap_gain*(ap_global.position.x) + turtlebot_v.x;
-      vel.twist.linear.y = -1*ap_gain * (ap_global.position.y) + turtlebot_v.y;
-      vel.twist.linear.z = -1.5*(host_mocap.pose.position.z - 1.0);
+      vel.twist.linear.x = 1*ap_gain*(ap_global.position.x) + 0.2* turtlebot_v.x;
+      vel.twist.linear.y = -1*ap_gain * (ap_global.position.y) + 0.2* turtlebot_v.y;
+      vel.twist.linear.z = -1.5*(host_mocap.pose.position.z - 0.8);
 
 
 
