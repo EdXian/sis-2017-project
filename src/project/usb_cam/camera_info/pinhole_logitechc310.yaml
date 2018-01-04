@@ -1,0 +1,27 @@
+image_width: 640
+image_height: 480
+camera_name: pinhole_logitechc310
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [837.211013, 0, 321.154671, 0, 835.933729, 247.886773, 0, 0, 1]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [0.085216 , 0.163139 , -0.005916 , -0.000005, 0]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [837.211013, 0, 321.154671, 0, 0, 835.933729, 247.886773, 0, 0, 0, 1, 0]
+
+
+
+
+
+
+

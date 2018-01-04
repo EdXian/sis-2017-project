@@ -1,0 +1,21 @@
+image_width: 640
+image_height: 480
+camera_name: 150degree.yaml
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [427.85624677052795, 0, 303.14703112063177, 0, 429.5427495762245, 242.65455212046967, 0, 0, 1]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [0.11026153652695474, 0.13929215603933637, -0.3404042254153107, 0.3407246432840366, 0]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [427.85624677052795, 0, 303.14703112063177, 0, 0, 429.5427495762245, 242.65455212046967, 0, 0, 0, 1, 0]
+
