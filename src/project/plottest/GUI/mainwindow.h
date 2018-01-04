@@ -28,6 +28,15 @@ private slots:
 
 private:
 
+    QVector<QCPCurveData> curve_data;
+    QCPCurve *drone_curve;
+    std::vector<QCPCurve*> curve_list;
+    std::vector<QCPCurve*> path_curve_list;
+    QVector<QCPCurveData> path_data_list;
+    std::vector<geometry_msgs::PoseStamped> path_data;
+
+//    QVector<> path_data;
+//    std::vector<QVector<double>> path_data_list;
 
     QTimer *timer;
     //QVector<double> x,y;

@@ -33,7 +33,7 @@ sudo ./install_geographiclib_datasets.sh
 ```
 
 ### Virtual Reality Peripheral Network. 
-Before connecting to MOCAP System (Optitrack) ,you have to install VRPN library. 
+Before connecting to MOCAP System (Optitrack) ,you have to install VRPN library first. 
 ```
 install vrpn...
 sudo apt-get install ros-kinetic-vrpn
