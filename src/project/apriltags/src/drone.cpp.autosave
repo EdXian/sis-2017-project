@@ -310,6 +310,7 @@ int main(int argc, char **argv)
     std::cout<<std::endl;
     ROS_INFO("setpoint:  roll : %.5f\n", qua2eul(host_mocap));
 
+    //compute turtlebot velocity
     turtlebot_v.x = (turtlebot_mocap.pose.position.x - turtlebot_mocap_last.pose.position.x)/(0.01);
     turtlebot_v.y = (turtlebot_mocap.pose.position.y - turtlebot_mocap_last.pose.position.y)/(0.01);
 
