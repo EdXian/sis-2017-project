@@ -12,4 +12,5 @@ void rigidbody::pose_cb(const geometry_msgs::PoseStamped::ConstPtr &msg)
    this->data.x=msg->pose.position.x;
    this->data.y=msg->pose.position.y;
    this->data.z=msg->pose.position.z;
+  record_data.push_back(this->data);
 }

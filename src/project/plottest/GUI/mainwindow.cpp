@@ -81,12 +81,20 @@ void MainWindow::plot_loop()
       }
         curve_list[j]->setPen(QPen(Qt::red));
         curve_list[j]->data()->set(curve_data,true);
-
-
-
-
     }
 
+    for(unsigned int j=0;j< rigidbody_group.size();j++){
+      path_data.resize(rigidbody_group[j]->record_data.size());
+
+      for(unsigned int i=0;i<rigidbody_group[j]->record_data.size();i++){
+
+        path_data[i] = QCPCurveData(i,rigidbody_group[j]->record_data[i].x,rigidbody_group[j]->record_data[i].y );
+      }
+
+      path_curve_list[j]->setPen(QPen(Qt::red));
+      path_curve_list[j]->data()->set(path_data,true);
+
+    }
     ui->customplot->xAxis->setLabel("x");
     ui->customplot->yAxis->setLabel("y");
     ui->customplot->replot();

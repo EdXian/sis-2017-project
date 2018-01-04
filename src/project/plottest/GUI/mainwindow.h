@@ -32,8 +32,8 @@ private:
     QCPCurve *drone_curve;
     std::vector<QCPCurve*> curve_list;
     std::vector<QCPCurve*> path_curve_list;
-    QVector<QCPCurveData> path_data_list;
-    std::vector<geometry_msgs::PoseStamped> path_data;
+    QVector<QCPCurveData> path_data;
+    //std::vector<geometry_msgs::PoseStamped> path_data;
 
 //    QVector<> path_data;
 //    std::vector<QVector<double>> path_data_list;

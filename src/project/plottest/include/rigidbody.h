@@ -12,6 +12,8 @@ public:
 
   rigidbody(std::string name);
    geometry_msgs::Point data;
+   std::vector<geometry_msgs::Point> record_data;
+
 private:
    void sub_loop();
   ros::NodeHandle nh;
