@@ -7,7 +7,7 @@ add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-
+    sensor_msgs
 )
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5PrintSupport)
