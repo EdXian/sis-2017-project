@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< HEAD
+<!-- Written by QtCreator 4.4.1, 2018-01-04T18:03:03. -->
+=======
 <!-- Written by QtCreator 4.4.1, 2018-01-04T18:17:31. -->
+>>>>>>> 89d5980518b4dd88e8e21cf622752278b42f3312
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -118,6 +122,7 @@
      <value type="QString">SHLVL=2</value>
      <value type="QString">TERM=xterm</value>
      <value type="QString">_=/usr/bin/env</value>
+     <value type="QString">force_s3tc_enable=true</value>
     </valuelist>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Debug</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Debug</value>

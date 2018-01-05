@@ -11,8 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
      ui->setupUi(this);
      this->setWindowTitle("sis-2017-project");
-
-
+    ui->progressBar->setTextVisible(true);
+    battery_state_sub = nh.subscribe<sensor_msgs::BatteryState>("/mavros/battery",10,&MainWindow::get_battery_state,this);
+    mavros_state_sub = nh.subscribe<mavros_msgs::State>("/mavros/state",10,&MainWindow::get_mavros_state,this);
     getRosTopics(topic_list);
     for(ros::master::V_TopicInfo::iterator it=topic_list.begin();it!=topic_list.end();it++)
     {
@@ -45,7 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     {
       ros::spinOnce();
     }
-
+    state_timer = new QTimer(this);
+    connect(state_timer, SIGNAL(timeout()),this, SLOT(state_loop()));
+    state_timer->start(10);
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()),this, SLOT(plot_loop()));
     //timer->start(10);
@@ -61,14 +64,52 @@ MainWindow::~MainWindow()
   delete timer;
 
 }
+void MainWindow::state_loop(){
+  ros::spinOnce();
+  float percentagge;
+
+  QPalette palette = ui->label->palette();
+  // palette.setColor(ui->label->backgroundRole(), Qt::yellow);
+
+
+
+  percentagge =  battery_state.percentage * 100;
+  ui->progressBar->setValue(percentagge);
+  if(percentagge > 80){
+    ui->label->setText(QString("Battery Well"));
+    palette.setColor(ui->label->foregroundRole(), Qt::green);
+    ui->label->setPalette(palette);
+  }else if(percentagge > 60){
+     palette.setColor(ui->label->foregroundRole(), Qt::green);
+    ui->label->setText(QString("Battery Medium"));
+    ui->label->setPalette(palette);
+  }else if(percentagge > 40){
+    ui->label->setText(QString("Battery Warnning"));
+     palette.setColor(ui->label->foregroundRole(), Qt::darkYellow);
+     ui->label->setPalette(palette);
+  }else if(percentagge < 20){
+   palette.setColor(ui->label->foregroundRole(), Qt::red);
+    ui->label->setText(QString("Battery Fatal"));
+    ui->label->setPalette(palette);
+  }
+
+
+
+  std::string str = mavros_state.mode;
+  ui->checkBox->setChecked(mavros_state.armed);
+  ui->checkBox_2->setChecked(mavros_state.connected);
+
+  ui->label_2->setText(QString("Mode : %1").arg(str.c_str()));
+
+}
+
 void MainWindow::plot_loop()
 {
 
   if(ros::ok())
   {
-
-     ros::spinOnce();
-
+   // ros::spinOnce();
+    //ros::spinOnce();
      //plot rigid body curve
     for(unsigned int j = 0; j< rigidbody_group.size();j++){
 
@@ -112,10 +153,6 @@ void MainWindow::plot_loop()
     ui->customplot->yAxis->setLabel("y");
     ui->customplot->replot();
   }
-
-
-
-
   else
   {
      QApplication::quit();
@@ -146,4 +183,14 @@ void MainWindow::on_pushButton_clicked()
     ui->pushButton->setText("Start");
      timer->start(10);
   }
+}
+
+void MainWindow::get_mavros_state(const mavros_msgs::State::ConstPtr& state){
+  mavros_state = * state;
+}
+
+void MainWindow::get_battery_state(const sensor_msgs::BatteryState::ConstPtr& state){
+
+     battery_state = *state;
+
 }

@@ -10,6 +10,12 @@
 #include <QApplication>
 #include<QTimer>
 #include "ui_mainwindow.h"
+//#include "sensor_msgs/BatteryState"
+#include "sensor_msgs/BatteryState.h"
+#include "mavros_msgs/State.h"
+#include "QString"
+#include "string.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -25,22 +31,21 @@ public:
 private slots:
 
     void plot_loop();
-
+    void state_loop();
     void on_pushButton_clicked();
 
 private:
     QCPCurveData plot;
     QVector<QCPCurveData> curve_data;
-//    QCPCurve *drone_curve;
     std::vector<QCPCurve*> curve_list;
     std::vector<QCPCurve*> path_curve_list;
     QVector<QCPCurveData> path_data;
-    //std::vector<geometry_msgs::PoseStamped> path_data;
-
-//    QVector<> path_data;
-//    std::vector<QVector<double>> path_data_list;
-
+    void get_mavros_state(const mavros_msgs::State::ConstPtr& state);
+    void get_battery_state(const sensor_msgs::BatteryState::ConstPtr& state);
+    sensor_msgs::BatteryState  battery_state;
+    mavros_msgs::State  mavros_state;
     QTimer *timer;
+    QTimer *state_timer;
     //QVector<double> x,y;
     std::vector<QVector<double>> x,y;
     Ui::MainWindow *ui;
@@ -48,7 +53,8 @@ private:
     std::vector<std::string> rigidbody_list;
     std::vector<rigidbody*> rigidbody_group;
     ros::NodeHandle nh;
-    ros::Subscriber sub;
+    ros::Subscriber battery_state_sub;
+    ros::Subscriber mavros_state_sub;
     ros::master::V_TopicInfo topic_list;
     bool getRosTopics(ros::master::V_TopicInfo& topics);
 };
