@@ -16,7 +16,7 @@
 #include <fcntl.h>
 
 #define ap_gain 0.4
-
+#define forward_gain 0.0
 #define pi 3.1415926
 int flag=0;
 float KPx = 1;
@@ -45,13 +45,11 @@ void apriltags_cb(const apriltags::AprilTagDetections::ConstPtr& msg){
 
   tags = *msg;
   if(tags.detections.size() !=0 ){
-//    std::cout <<tags.detections[0].pose.position.x
-//              <<tags.detections[0].pose.position.y
-//              <<tags.detections[0].pose.position.z<<std::endl;
+
     apriltag_pose = tags.detections[0].pose;
     apriltag_detect = true;
   }else{
-//    std::cout<<  "empty" <<std::endl;
+
     apriltag_detect = false;
   }
 }
@@ -83,9 +81,6 @@ float qua2eul(geometry_msgs::PoseStamped& host_mocap)
     qz2=(host_mocap.pose.orientation.z)*(host_mocap.pose.orientation.z);
     qw2=(host_mocap.pose.orientation.w)*(host_mocap.pose.orientation.w);
     roll = atan2(2*host_mocap.pose.orientation.z*host_mocap.pose.orientation.w+2*host_mocap.pose.orientation.x*host_mocap.pose.orientation.y , 1 - 2*qy2 - 2*qz2);
-    //roll = asin(2*host_mocap.pose.orientation.x*host_mocap.pose.orientation.y + 2*host_mocap.pose.orientation.z*host_mocap.pose.orientation.w);
-    //pitch = atan2(2*host_mocap.pose.orientation.x*host_mocap.pose.orientation.w-2*host_mocap.pose.orientation.y*host_mocap.pose.orientation.z , 1 - 2*qx2 - 2*qz2);
-  //ROS_INFO("eul: %.3f, %.3f, %.3f", pitch/pi*180, yaw/pi*180, roll/pi*180);
 
     return roll;
 }
@@ -176,7 +171,7 @@ int main(int argc, char **argv)
 
   ros::Publisher pst_pub = nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local", 10);
 
-  ros::Rate rate(100);
+  ros::Rate rate(50);
 
   // Wait for FCU connection.
   while (ros::ok() && current_state.connected) {
@@ -188,7 +183,7 @@ int main(int argc, char **argv)
   vir target,turtlebot_v;
   target.x = 0;
   target.y = 0.0;
-  target.z = 0.8;
+  target.z = 1.0;
   target.roll = 0;
   host_mocap_last.header.stamp = ros::Time::now();
   host_mocap_last.pose.position.x = target.x;
@@ -331,12 +326,12 @@ int main(int argc, char **argv)
 
        pst.position.x = 0;
        pst.position.y = 0.0;
-       pst.position.z = 0.35;
+       pst.position.z = 0.28;
        pst.yaw = -1*(pi/2);
 
        vel.twist.linear.x = -1* (host_mocap.pose.position.x - 0   );
-       vel.twist.linear.y = -1* (host_mocap.pose.position.y - 0.15   );
-       vel.twist.linear.z = -1* (host_mocap.pose.position.z - 0.4   );
+       vel.twist.linear.y = -1* (host_mocap.pose.position.y - 0.0   );
+       vel.twist.linear.z = -1* (host_mocap.pose.position.z - 0.20   );
 
     }else if((apriltag_detect==true) && (landing == false)){
 
@@ -357,9 +352,9 @@ int main(int argc, char **argv)
       pst.velocity.y = -1*ap_gain * (ap_global.position.y);
       pst.velocity.z = -1.5*(host_mocap.pose.position.z - 1.0); //desired height
 
-      vel.twist.linear.x = 1*ap_gain*(ap_global.position.x) + 0.2* turtlebot_v.x;
-      vel.twist.linear.y = -1*ap_gain * (ap_global.position.y) + 0.2* turtlebot_v.y;
-      vel.twist.linear.z = -1.5*(host_mocap.pose.position.z - 0.8);
+      vel.twist.linear.x = 1*ap_gain*(ap_global.position.x) + forward_gain * turtlebot_v.x;
+      vel.twist.linear.y = -1*ap_gain * (ap_global.position.y) + forward_gain * turtlebot_v.y;
+      vel.twist.linear.z = -1.5*(host_mocap.pose.position.z - (1.0-0.105));
 
 
 
@@ -391,6 +386,7 @@ int main(int argc, char **argv)
   //  local_pos_pub.publish(drone_target);
     vel.header.stamp = ros::Time::now();
     local_vel_pub.publish(vel);
+    host_mocap.header.stamp = ros::Time::now();
     mocap_pos_pub.publish(host_mocap);
     ros::spinOnce();
     rate.sleep();
