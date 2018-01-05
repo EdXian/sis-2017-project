@@ -26,6 +26,8 @@ private slots:
 
     void plot_loop();
 
+    void on_pushButton_clicked();
+
 private:
     QCPCurveData plot;
     QVector<QCPCurveData> curve_data;

@@ -6,14 +6,13 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-//    r1("/vrpn_client_node/RigidBody1/pose"),
-//    x(1),y(1)
+
       ,x(10),y(10),curve_data(100)
 {
      ui->setupUi(this);
-     this->setWindowTitle("plottest");
+     this->setWindowTitle("sis-2017-project");
 
-    //drone_curve =  new QCPCurve(ui->customplot->xAxis, ui->customplot->yAxis);
+
     getRosTopics(topic_list);
     for(ros::master::V_TopicInfo::iterator it=topic_list.begin();it!=topic_list.end();it++)
     {
@@ -49,10 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()),this, SLOT(plot_loop()));
-    timer->start(10);
-    //looprate
+    //timer->start(10);
 
-    //drone_curve->setPen(QPen(Qt::red));
 
 
 
@@ -138,4 +135,15 @@ bool MainWindow::getRosTopics(ros::master::V_TopicInfo& topics){
     for (int i = 0; i < payload.size(); ++i)
         topics.push_back(ros::master::TopicInfo(std::string(payload[i][0]), std::string(payload[i][1])));
     return true;
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+  if(timer->isActive()){
+    timer->stop();
+    ui->pushButton->setText("Stop");
+  }else{
+    ui->pushButton->setText("Start");
+     timer->start(10);
+  }
 }
